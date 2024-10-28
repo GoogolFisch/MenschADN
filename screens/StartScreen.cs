@@ -8,6 +8,7 @@ namespace MenschADN.screens
 {
     public class StartScreen : Screen
     {
+        Font titleFont;
         Label title;
         public StartScreen(Form parent) : base(parent)
         {
@@ -15,8 +16,13 @@ namespace MenschADN.screens
 
         public override void Create()
         {
-            title = new Label();
-            title.Text = "Mensch Ärger Dich Nicht";
+            titleFont = new Font(FontFamily.GenericSerif, 24, FontStyle.Bold);
+            title = new Label
+            {
+                Font = titleFont,
+                AutoSize = true,
+                Text = "Mensch Ärger Dich Nicht"
+            };
             this.parentForm.Controls.Add(title);
             //this.parentForm.ResizeEnd += ;
         }
@@ -24,10 +30,13 @@ namespace MenschADN.screens
         public override void Destroy()
         {
             parentForm.Controls.Remove(title);
+            title.Dispose();
+            titleFont.Dispose();
         }
 
         public override void Resize(object? sender, EventArgs e)
         {
+            title.Location = new Point((parentForm.Width - title.Width) / 2, 15);
         }
     }
 }
