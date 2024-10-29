@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MenschADN
+namespace MenschADN.screens
 {
     public abstract class Screen
     {
         internal Form parentForm;
         public Screen(Form parent)
         {
-            this.parentForm = parent;
+            parentForm = parent;
         }
 
         public abstract void Create();
