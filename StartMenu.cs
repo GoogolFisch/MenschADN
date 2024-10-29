@@ -4,7 +4,7 @@ namespace MenschADN
 {
     public partial class StartMenu : Form
     {
-        Screen currentScreen;
+        screens.Screen currentScreen;
         public StartMenu()
         {
             InitializeComponent();
@@ -20,7 +20,7 @@ namespace MenschADN
                 currentScreen.Resize(sender, e);
             }
         }
-        public void ChangeScreen(Screen newScreen)
+        public void ChangeScreen(screens.Screen newScreen)
         {
             currentScreen.Destroy();
             currentScreen = newScreen;
