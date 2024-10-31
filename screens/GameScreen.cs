@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MenschADN.players;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace MenschADN.screens
 {
     public class GameScreen : Screen
     {
+        Player[] currentPlayers;
         public GameScreen(Form parent) : base(parent)
         {
         }

@@ -1,6 +1,6 @@
 ﻿namespace MenschADN
 {
-    partial class StartMenu
+    partial class Displayer
     {
         /// <summary>
         ///  Required designer variable.

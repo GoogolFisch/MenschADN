@@ -2,10 +2,10 @@ using MenschADN.screens;
 
 namespace MenschADN
 {
-    public partial class StartMenu : Form
+    public partial class Displayer : Form
     {
         screens.Screen currentScreen;
-        public StartMenu()
+        public Displayer()
         {
             InitializeComponent();
             currentScreen = new StartScreen(this);

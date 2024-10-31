@@ -8,9 +8,7 @@ namespace MenschADN.players
 {
     public class Player
     {
-        internal int position;
-        internal bool canBeMoved;
-
+        // Object gamePiece;
         // IDK
         public void DoMove(){}
     }
