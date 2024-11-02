@@ -8,7 +8,7 @@ namespace MenschADN
         public Displayer()
         {
             InitializeComponent();
-            currentScreen = new StartScreen(this);
+            currentScreen = new StartScreen(this,null);
             this.Resize += ResizeHandler;
             this.ResizeEnd += ResizeHandler;
             currentScreen.Create();
@@ -25,6 +25,7 @@ namespace MenschADN
             currentScreen.Destroy();
             currentScreen = newScreen;
             newScreen.Create();
+            newScreen.Resize(this,EventArgs.Empty);
         }
     }
 }

@@ -12,5 +12,14 @@ namespace MenschADN.game
         internal GamePiece[] allPieces;
         internal Player[] players;
         int diceNumber;
+        Button[] tileButton; // do it like this?
+        public void CreateTiles(Panel pan)
+        {
+            
+        }
+        public void DestroyTiles()
+        {
+
+        }
     }
 }
