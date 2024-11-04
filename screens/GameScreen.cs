@@ -21,10 +21,12 @@ namespace MenschADN.screens
 
         public override void Create()
         {
+            board = new GameBoard();
             gameBoardPan = new Panel()
             {
                 AutoSize = true,
             };
+            board.CreateTiles(gameBoardPan);
             parentForm.Controls.Add(gameBoardPan);
             diceNumber = new Label()
             {
@@ -38,6 +40,7 @@ namespace MenschADN.screens
         {
             gameBoardPan.Controls.Remove(diceNumber);
             diceNumber.Dispose();
+            board.DestroyTiles();
             // at the end--
             parentForm.Controls.Remove(gameBoardPan);
             gameBoardPan.Dispose();
