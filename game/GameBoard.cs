@@ -15,23 +15,14 @@ namespace MenschADN.game
         int diceNumber;
         Button[] tileButton; // do it like this? // or with another class?
         Button[,] homeButtons; // change with above
+        Button[,] startFields; // change with above
         private Panel parentPannel;
         public void CreateTiles(Panel pan)
         {
             parentPannel = pan;
-            // 48?
-            int counter = 0;
+
+            // the walk around field.
             tileButton = new Button[40];
-            /*
-            tileButton[counter++] = new Button()
-            {
-                Location = new Point(4 * tileSize, 0),
-            };
-            tileButton[counter++] = new Button()
-            {
-                Location = new Point(5 * tileSize, 0),
-            };
-            /**/
             Point[] loc = {
                 // start of a
                 new Point(6,0),new Point(6,1),new Point(6,2),new Point(6,3),
@@ -61,15 +52,18 @@ namespace MenschADN.game
                     Size = new Size(tileSize,tileSize),
                     Text = overBut.ToString(), // remove if seen fit XXX
                 };
+                if (overBut % 10 == 0)
+                    tileButton[overBut].BackColor = Apearence.playerColors[overBut / 10];
                 pan.Controls.Add(tileButton[overBut]);
             }
+            // the home area
+            homeButtons = new Button[4, 4];
             Point[,] homePos = {
                 { new Point(5,1), new Point(5,2), new Point(5,3), new Point(5,4) },
                 { new Point(9,5), new Point(8,5), new Point(7,5), new Point(6,5) },
                 { new Point(5,9), new Point(5,8), new Point(5,7), new Point(5,6) },
                 { new Point(1,5), new Point(2,5), new Point(3,5), new Point(4,5) },
             };
-            homeButtons = new Button[4, 4];
             for (int overHome = 0; overHome < 4; overHome++)
             {
                 for (int overBut = 0; overBut < 4; overBut++)
@@ -79,8 +73,31 @@ namespace MenschADN.game
                         Location = new Point(homePos[overHome,overBut].X * tileSize, homePos[overHome, overBut].Y * tileSize),
                         Size = new Size(tileSize, tileSize),
                         Text = $"{overHome}:{overBut}", // remove if seen fit XXX
+                        BackColor = Apearence.playerColors[overHome],
                     };
                     pan.Controls.Add(homeButtons[overHome,overBut]);
+                }
+            }
+            // the start area
+            startFields = new Button[4, 4];
+            Point[,] startPos = {
+                { new Point(10,0), new Point(9,0), new Point(9,1), new Point(10,1) },
+                { new Point(10,10), new Point(10,9), new Point(9,9), new Point(9,10) },
+                { new Point(0,10), new Point(0,9), new Point(1,9), new Point(1,10) },
+                { new Point(0,0), new Point(1,0), new Point(1,1), new Point(0,1) },
+            };
+            for (int overHome = 0; overHome < 4; overHome++)
+            {
+                for (int overBut = 0; overBut < 4; overBut++)
+                {
+                    homeButtons[overHome, overBut] = new Button()
+                    {
+                        Location = new Point(startPos[overHome, overBut].X * tileSize, startPos[overHome, overBut].Y * tileSize),
+                        Size = new Size(tileSize, tileSize),
+                        Text = $"{overHome}:{overBut}", // remove if seen fit XXX
+                        BackColor = Apearence.playerColors[overHome],
+                    };
+                    pan.Controls.Add(homeButtons[overHome, overBut]);
                 }
             }
         }
@@ -88,7 +105,17 @@ namespace MenschADN.game
         {
             foreach (Button b in tileButton)
             {
-                parentPannel.Controls.Add(b);
+                parentPannel.Controls.Remove(b);
+                b.Dispose();
+            }
+            foreach (Button b in homeButtons)
+            {
+                parentPannel.Controls.Remove(b);
+                b.Dispose();
+            }
+            foreach (Button b in startFields)
+            {
+                parentPannel.Controls.Remove(b);
                 b.Dispose();
             }
         }
