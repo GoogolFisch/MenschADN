@@ -13,9 +13,9 @@ namespace MenschADN.game
         internal Player[] players;
         static int tileSize = 64;
         int diceNumber;
-        Button[] tileButton; // do it like this? // or with another class?
-        Button[,] homeButtons; // change with above
-        Button[,] startFields; // change with above
+        internal Button[] tileButton; // do it like this? // or with another class?
+        internal Button[,] homeButtons; // change with above
+        internal Button[,] startFields; // change with above
         private Panel parentPannel;
         public void CreateTiles(Panel pan)
         {
@@ -51,6 +51,7 @@ namespace MenschADN.game
                     Location = new Point(loc[overBut].X * tileSize, loc[overBut].Y * tileSize),
                     Size = new Size(tileSize,tileSize),
                     Text = overBut.ToString(), // remove if seen fit XXX
+                    BackgroundImageLayout = ImageLayout.Zoom,
                 };
                 if (overBut % 10 == 0)
                     tileButton[overBut].BackColor = Apearence.playerColors[overBut / 10];
@@ -74,6 +75,7 @@ namespace MenschADN.game
                         Size = new Size(tileSize, tileSize),
                         Text = $"{overHome}:{overBut}", // remove if seen fit XXX
                         BackColor = Apearence.playerColors[overHome],
+                        BackgroundImageLayout = ImageLayout.Zoom,
                     };
                     pan.Controls.Add(homeButtons[overHome,overBut]);
                 }
@@ -90,14 +92,26 @@ namespace MenschADN.game
             {
                 for (int overBut = 0; overBut < 4; overBut++)
                 {
-                    homeButtons[overHome, overBut] = new Button()
+                    startFields[overHome, overBut] = new Button()
                     {
                         Location = new Point(startPos[overHome, overBut].X * tileSize, startPos[overHome, overBut].Y * tileSize),
                         Size = new Size(tileSize, tileSize),
                         Text = $"{overHome}:{overBut}", // remove if seen fit XXX
                         BackColor = Apearence.playerColors[overHome],
+                        BackgroundImageLayout = ImageLayout.Zoom,
                     };
-                    pan.Controls.Add(homeButtons[overHome, overBut]);
+                    pan.Controls.Add(startFields[overHome, overBut]);
+                }
+            }
+            // create players
+            int index = 0;
+            allPieces = new GamePiece[16];
+            for (int overHome = 0; overHome < 4; overHome++)
+            {
+                for (int overPlayer = 0; overPlayer < 4; overPlayer++,index++)
+                {
+                    allPieces[index] = new GamePiece(this,overPlayer,overHome);
+                    allPieces[index].Move(0);
                 }
             }
         }
@@ -118,6 +132,18 @@ namespace MenschADN.game
                 parentPannel.Controls.Remove(b);
                 b.Dispose();
             }
+        }
+
+        internal GamePiece PlayerAtPos(int pos)
+        {
+            for (int i = 0; i < allPieces.Length; i++)
+            {
+                if (allPieces[i].realPos == pos && allPieces[i].canMove)
+                {
+                    return allPieces[i];
+                }
+            }
+            return null;
         }
     }
 }

@@ -1,3 +1,4 @@
+using MenschADN.assets;
 using MenschADN.screens;
 
 namespace MenschADN
@@ -8,6 +9,7 @@ namespace MenschADN
         public Displayer()
         {
             InitializeComponent();
+            ImageLoader imgLoad = new();
             currentScreen = new StartScreen(this,null);
             this.Resize += ResizeHandler;
             this.ResizeEnd += ResizeHandler;
