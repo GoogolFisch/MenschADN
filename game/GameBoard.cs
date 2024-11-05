@@ -145,5 +145,16 @@ namespace MenschADN.game
             }
             return null;
         }
+        internal GamePiece PlayerInHome(int pos,int color)
+        {
+            for (int i = 0; i < allPieces.Length; i++)
+            {
+                if (allPieces[i].realPos == pos && allPieces[i].canMove && allPieces[i].color == color)
+                {
+                    return allPieces[i];
+                }
+            }
+            return null;
+        }
     }
 }

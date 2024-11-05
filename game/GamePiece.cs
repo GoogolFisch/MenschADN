@@ -1,6 +1,7 @@
 ﻿using MenschADN.assets;
 using System;
 using System.Collections.Generic;
+using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,12 +15,14 @@ namespace MenschADN.game
         public int realPos { get{ if (position < 40) return (position + color * 10) % 40; else return position; } }
         internal bool canMove;
         internal int color;
+        internal bool isWinning;
         internal GameBoard board;
         public GamePiece(GameBoard board,int startPos,int color)
         {
             this.startPos = startPos;
             this.board = board;
             this.color = color;
+            isWinning = false;
         }
         private void RemFromBoard()
         {
@@ -54,6 +57,7 @@ namespace MenschADN.game
             }
             else
             {
+                isWinning = false;
                 board.homeButtons[color, position - 40].BackgroundImage = ImageLoader.playerArr[color];
             }
         }
@@ -63,8 +67,9 @@ namespace MenschADN.game
             canMove = false;
             AddToBoard();
         }
-        public void Move(int spaces)
+        public bool Move(int spaces)
         {
+            bool success = false;
             RemFromBoard();
             if (!canMove)
             {
@@ -72,19 +77,53 @@ namespace MenschADN.game
                 {
                     position = 0;
                     GamePiece gp = board.PlayerAtPos(realPos);
-                    if (gp != null)
+                    if(gp != null && gp.color != this.color)
+                    {
                         gp.Capture();
-                    canMove = true;
+                        gp = null;
+                    }
+                    if(gp == null)
+                    {
+                        success = true;
+                        canMove = true;
+                    }
                 }
             }
             else
             {
-                GamePiece gp = board.PlayerAtPos((position + position + color * 10) % 40);
-                if (gp != null)
+                GamePiece gp = board.PlayerAtPos((position + spaces + color * 10) % 40);
+                if (gp != null && gp.color != this.color)
+                {
                     gp.Capture();
-                position += spaces;
+                    gp = null;
+                    success = true;
+                }
+                if (gp == null)
+                {
+                    if (position + spaces < 40)
+                    {
+                        success = true;
+                        position += spaces;
+                    }
+                    else if(position + spaces < 44) 
+                    {
+                        int predictedPos = position + spaces - 40 ;
+                        bool anyPieceInFront = false;
+                        for (int over = position; over < predictedPos; over++)
+                        {
+                            gp = board.PlayerInHome(predictedPos,color);
+                            anyPieceInFront |= gp != null;
+                        }
+                        if (!anyPieceInFront)
+                        {
+                            success = true;
+                            position += spaces;
+                        }
+                    }
+                }
             }
             AddToBoard();
+            return success;
         }
         public bool IsInHouse() { return false; }
     }
