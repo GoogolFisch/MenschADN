@@ -8,10 +8,12 @@ namespace MenschADN.screens
 {
     public abstract class Screen
     {
-        internal Form parentForm;
-        public Screen(Form parent)
+        internal Displayer parentForm;
+        internal Screen oldScreen;
+        public Screen(Displayer parent,Screen screenParent)
         {
             parentForm = parent;
+            oldScreen = screenParent;
         }
 
         public abstract void Create();
