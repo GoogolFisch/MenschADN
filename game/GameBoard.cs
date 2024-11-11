@@ -1,4 +1,5 @@
 ﻿using MenschADN.players;
+using MenschADN.screens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,11 @@ namespace MenschADN.game
         internal Button[,] homeButtons; // change with above
         internal Button[,] startFields; // change with above
         private Panel parentPannel;
+        private GameScreen gameScreen;
+        public GameBoard(GameScreen gmsc)
+        {
+            this.gameScreen = gmsc;
+        }
         public void CreateTiles(Panel pan)
         {
             parentPannel = pan;
@@ -50,8 +56,21 @@ namespace MenschADN.game
                 {
                     Location = new Point(loc[overBut].X * tileSize, loc[overBut].Y * tileSize),
                     Size = new Size(tileSize,tileSize),
+                    Tag = overBut,
                     Text = overBut.ToString(), // remove if seen fit XXX
                     BackgroundImageLayout = ImageLayout.Zoom,
+                };
+                int keepThisPos = overBut; // I hate how this works! why is everything on the heap!
+                tileButton[overBut].Click += (o, e) => {
+                    foreach (GamePiece pc in allPieces)
+                    {
+                        if (pc.realPos == keepThisPos && pc.color == gameScreen.currentColor && pc.canMove)
+                        {
+                            gameScreen.SlectPiece(pc);
+                            return;
+                        }
+                    }
+                    gameScreen.SlectPiece(null);
                 };
                 if (overBut % 10 == 0)
                     tileButton[overBut].BackColor = Apearence.playerColors[overBut / 10];
@@ -73,9 +92,24 @@ namespace MenschADN.game
                     {
                         Location = new Point(homePos[overHome,overBut].X * tileSize, homePos[overHome, overBut].Y * tileSize),
                         Size = new Size(tileSize, tileSize),
+                        Tag = overBut,
                         Text = $"{overHome}:{overBut}", // remove if seen fit XXX
                         BackColor = Apearence.playerColors[overHome],
                         BackgroundImageLayout = ImageLayout.Zoom,
+                    };
+                    int keepThisPos = overBut + 40;
+                    int keepThisColor = overHome;
+                    homeButtons[overHome, overBut].Click += (o, e) => {
+                        foreach (GamePiece pc in allPieces)
+                        {
+                            if (pc.realPos == keepThisPos &&
+                            pc.color == keepThisColor && pc.color == gameScreen.currentColor)
+                            {
+                                gameScreen.SlectPiece(pc);
+                                return;
+                            }
+                        }
+                        gameScreen.SlectPiece(null);
                     };
                     pan.Controls.Add(homeButtons[overHome,overBut]);
                 }
@@ -96,9 +130,28 @@ namespace MenschADN.game
                     {
                         Location = new Point(startPos[overHome, overBut].X * tileSize, startPos[overHome, overBut].Y * tileSize),
                         Size = new Size(tileSize, tileSize),
+                        Tag = overBut,
                         Text = $"{overHome}:{overBut}", // remove if seen fit XXX
                         BackColor = Apearence.playerColors[overHome],
                         BackgroundImageLayout = ImageLayout.Zoom,
+                    };
+                    int keepThisPos = overBut;
+                    int keepThisColor = overHome;
+                    startFields[overHome, overBut].Click += (o, e) => {
+                        foreach (GamePiece pc in allPieces)
+                        {
+                            if (
+                            pc.realPos == keepThisPos &&
+                            pc.color == gameScreen.currentColor &&
+                            pc.color == keepThisColor &&
+                            !pc.canMove
+                            )
+                            {
+                                gameScreen.SlectPiece(pc);
+                                return;
+                            }
+                        }
+                        gameScreen.SlectPiece(null);
                     };
                     pan.Controls.Add(startFields[overHome, overBut]);
                 }

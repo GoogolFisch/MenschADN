@@ -12,17 +12,16 @@ namespace MenschADN.game
     {
         internal int startPos;
         internal int position;
-        public int realPos { get{ if (position < 40) return (position + color * 10) % 40; else return position; } }
+        public int realPos { get{ if (!canMove) { return startPos; } else if (position < 40) return (position + color * 10) % 40; else return position; } }
         internal bool canMove;
         internal int color;
-        internal bool isWinning;
+        internal bool isWinning { get { return position >= 40; } }
         internal GameBoard board;
         public GamePiece(GameBoard board,int startPos,int color)
         {
             this.startPos = startPos;
             this.board = board;
             this.color = color;
-            isWinning = false;
         }
         private void RemFromBoard()
         {
@@ -57,7 +56,6 @@ namespace MenschADN.game
             }
             else
             {
-                isWinning = false;
                 board.homeButtons[color, position - 40].BackgroundImage = ImageLoader.playerArr[color];
             }
         }
@@ -76,7 +74,10 @@ namespace MenschADN.game
                 if (spaces == 6)
                 {
                     position = 0;
-                    GamePiece gp = board.PlayerAtPos(realPos);
+                    canMove = true;
+                    int ccpM = realPos;
+                    canMove = false;
+                    GamePiece gp = board.PlayerAtPos(ccpM);
                     if(gp != null && gp.color != this.color)
                     {
                         gp.Capture();
@@ -91,7 +92,11 @@ namespace MenschADN.game
             }
             else
             {
-                GamePiece gp = board.PlayerAtPos((position + spaces + color * 10) % 40);
+                position += spaces;
+                int keepPos = realPos;
+                position -= spaces;
+                GamePiece gp = board.PlayerAtPos(keepPos);
+                if (position + spaces >= 40) gp = null;
                 if (gp != null && gp.color != this.color)
                 {
                     gp.Capture();
@@ -109,9 +114,9 @@ namespace MenschADN.game
                     {
                         int predictedPos = position + spaces - 40 ;
                         bool anyPieceInFront = false;
-                        for (int over = position; over < predictedPos; over++)
+                        for (int over = Math.Max(40,position+1); over <= predictedPos+40; over++)
                         {
-                            gp = board.PlayerInHome(predictedPos,color);
+                            gp = board.PlayerInHome(over,color);
                             anyPieceInFront |= gp != null;
                         }
                         if (!anyPieceInFront)
@@ -126,5 +131,20 @@ namespace MenschADN.game
             return success;
         }
         public bool IsInHouse() { return false; }
+
+        internal bool IsStuck(int diceNumber)
+        {
+            if (!canMove && diceNumber != 6)
+                return true;
+            if (position + diceNumber >= 44)
+                return true;
+            for (int over = position + 1; over <= diceNumber + position; over++)
+            {
+                GamePiece gp = board.PlayerInHome(over, color);
+                if (gp != null && gp.color == color)
+                    return true;
+            }
+            return false;
+        }
     }
 }
