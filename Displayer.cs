@@ -14,6 +14,7 @@ namespace MenschADN
             this.Resize += ResizeHandler;
             this.ResizeEnd += ResizeHandler;
             currentScreen.Create();
+            currentScreen.Resize(this, EventArgs.Empty);
         }
 
         private void ResizeHandler(object? sender, EventArgs e)
