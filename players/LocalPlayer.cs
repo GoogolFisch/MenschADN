@@ -10,7 +10,8 @@ namespace MenschADN.players
 {
     public class LocalPlayer : Player
     {
-        public LocalPlayer(GameScreen screen,int currentColor) : base(screen, currentColor)
+        public LocalPlayer(GameScreen screen,int currentColor,string name)
+            : base(screen, currentColor,name)
         {
         }
         public override bool HandelTurn(GamePiece selectedGamePiece)

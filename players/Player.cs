@@ -18,12 +18,14 @@ namespace MenschADN.players
         internal int currentColor = 0;
 
         internal int escapeTrys;
+        String name;
 
-        public Player(GameScreen screen, int currentColor)
+        public Player(GameScreen screen, int currentColor,String name)
         {
             escapeTrys = 0;
             this.screen = screen;
             this.currentColor = currentColor;
+            this.name = name;
         }
         public bool HasWon()
         {
@@ -106,6 +108,10 @@ namespace MenschADN.players
                 if (succ) ThrowDie();
             }
             return succ && !isMagic;
+        }
+        public override string ToString()
+        {
+            return name;
         }
     }
 }

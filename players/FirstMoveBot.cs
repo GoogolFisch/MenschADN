@@ -11,7 +11,8 @@ namespace MenschADN.players
     public class FirstMoveBot : Player
     {
         int escapeTrys;
-        public FirstMoveBot(GameScreen screen, int currentColor) : base(screen, currentColor)
+        public FirstMoveBot(GameScreen screen, int currentColor, string name)
+            : base(screen, currentColor, name)
         {
             escapeTrys = 0;
         }

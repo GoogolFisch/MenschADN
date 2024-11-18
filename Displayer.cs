@@ -10,6 +10,7 @@ namespace MenschADN
         {
             InitializeComponent();
             ImageLoader imgLoad = new();
+            this.DoubleBuffered = true;
             currentScreen = new StartScreen(this,null);
             this.Resize += ResizeHandler;
             this.ResizeEnd += ResizeHandler;

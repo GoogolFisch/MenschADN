@@ -16,6 +16,10 @@ namespace MenschADN.screens
         static PlayerCreator[] plCreate = new PlayerCreator[4];
         public StartScreen(Displayer parent,Screen parentScreen) : base(parent, parentScreen)
         {
+            for (int i = 0; i < plCreate.Length; i++)
+            {
+                plCreate[i] = new PlayerCreator();
+            }
         }
 
         public override void Create()
@@ -40,12 +44,12 @@ namespace MenschADN.screens
             playerSelect = new FlowLayoutPanel()
             {
                 AutoSize = true,
-                FlowDirection = FlowDirection.TopDown
+                FlowDirection = FlowDirection.TopDown,
+                Location = new Point(0,50),
             };
             parentForm.Controls.Add(playerSelect);
             for (int i = 0; i < plCreate.Length; i++)
             {
-                plCreate[i] = new PlayerCreator();
                 playerSelect.Controls.Add(plCreate[i].GetPanel(i));
             }
             //this.parentForm.ResizeEnd += ;
@@ -58,8 +62,8 @@ namespace MenschADN.screens
             {
                 plList[i] = plCreate[i].MakePlayer(sc);
             }
-            sc.GivePlayers(plList);
             parentForm.ChangeScreen(sc);
+            sc.GivePlayers(plList);
         }
 
         public override void Destroy()
@@ -82,6 +86,10 @@ namespace MenschADN.screens
         {
             title.Location = new Point((parentForm.Width - title.Width) / 2, 15);
             startGame.Location = new Point((parentForm.Width - startGame.Width) / 2, parentForm.Height / 5);
+        }
+        public void AddScore(int color)
+        {
+            plCreate[color].AddScore();
         }
     }
 }
