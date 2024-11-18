@@ -37,6 +37,7 @@ namespace MenschADN.screens
             currentPlayers = pl;
             currentPlayerIndex = -1;
             this.MoveToNetPlayer();
+            UpdateCurrentDisplay();
         }
         public override void Create()
         {
@@ -102,7 +103,8 @@ namespace MenschADN.screens
         }
         public void UpdateCurrentDisplay()
         {
-            diceNumber.Text = $"{currentPlayers[currentPlayerIndex].diceNumber}-{currentPlayerIndex}";
+            if(currentPlayerIndex != -1)
+                diceNumber.Text = $"{currentPlayers[currentPlayerIndex].diceNumber}-{currentPlayerIndex}";
         }
         private void GetChangeBackScreen(object? sender, EventArgs e)
         {

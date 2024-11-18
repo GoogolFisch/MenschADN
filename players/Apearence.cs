@@ -8,6 +8,6 @@ namespace MenschADN.players
 {
     public class Apearence
     {
-        public static Color[] playerColors = {Color.Red,Color.Yellow,Color.Green,Color.Blue };
+        public static Color[] playerColors = {Color.OrangeRed,Color.Yellow,Color.LimeGreen,Color.SkyBlue };
     }
 }
