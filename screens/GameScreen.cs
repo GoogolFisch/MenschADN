@@ -14,6 +14,8 @@ namespace MenschADN.screens
         internal GameBoard board;
         Panel gameBoardPan;
         Label diceNumber;
+        Label winnerDisplay;
+        Font hugeFont;
 
         int totalTrys = 0;
 
@@ -29,9 +31,9 @@ namespace MenschADN.screens
             currentPlayers[3] = new LocalPlayer(this, 3);
             this.MoveToNetPlayer();
         }
-
         public override void Create()
         {
+            hugeFont = new Font(FontFamily.GenericSerif, 12);
             board = new GameBoard(this);
             gameBoardPan = new Panel()
             {
@@ -48,9 +50,25 @@ namespace MenschADN.screens
             // before the game starts!
             UpdateCurrentDisplay();
         }
+        public void ShowWinner()
+        {
+            winnerDisplay = new Label()
+            {
+                AutoSize = true,
+                Text = $"{currentColor} has Won!",
+                Font = hugeFont
+            };
+            parentForm.Controls.Add(winnerDisplay);
+        }
 
         public override void Destroy()
         {
+            if (winnerDisplay != null)
+            {
+                parentForm.Controls.Remove(winnerDisplay);
+                winnerDisplay.Dispose();
+            }
+
             parentForm.Controls.Remove(diceNumber);
             diceNumber.Dispose();
             board.DestroyTiles();
@@ -85,7 +103,7 @@ namespace MenschADN.screens
             {
                 if (currentPlayers[currentPlayerIndex].HasWon())
                 {
-                    throw new Exception("you shall win!");
+                    ShowWinner();
                 }
                 else
                     MoveToNetPlayer();
