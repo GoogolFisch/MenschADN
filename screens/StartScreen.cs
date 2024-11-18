@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MenschADN.players;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace MenschADN.screens
         Font titleFont;
         Label title;
         Button startGame;
+        FlowLayoutPanel playerSelect;
+        static PlayerCreator[] plCreate = new PlayerCreator[4];
         public StartScreen(Displayer parent,Screen parentScreen) : base(parent, parentScreen)
         {
         }
@@ -34,11 +37,29 @@ namespace MenschADN.screens
             };
             startGame.Click += ChangeToGame;
             parentForm.Controls.Add(startGame);
+            playerSelect = new FlowLayoutPanel()
+            {
+                AutoSize = true,
+                FlowDirection = FlowDirection.TopDown
+            };
+            parentForm.Controls.Add(playerSelect);
+            for (int i = 0; i < plCreate.Length; i++)
+            {
+                plCreate[i] = new PlayerCreator();
+                playerSelect.Controls.Add(plCreate[i].GetPanel(i));
+            }
             //this.parentForm.ResizeEnd += ;
         }
         private void ChangeToGame(object sender, EventArgs e)
         {
-            parentForm.ChangeScreen(new GameScreen(parentForm,this));
+            Player[] plList = new Player[plCreate.Length];
+            screens.GameScreen sc = new GameScreen(parentForm, this);
+            for (int i = 0; i < plList.Length; i++)
+            {
+                plList[i] = plCreate[i].MakePlayer(sc);
+            }
+            sc.GivePlayers(plList);
+            parentForm.ChangeScreen(sc);
         }
 
         public override void Destroy()
@@ -47,8 +68,14 @@ namespace MenschADN.screens
             title.Dispose();
             parentForm.Controls.Remove(startGame);
             startGame.Dispose();
+            parentForm.Controls.Remove(playerSelect);
+            playerSelect.Dispose();
             // remove font!
             titleFont.Dispose();
+            for (int i = 0; i < plCreate.Length; i++)
+            {
+                playerSelect.Controls.Remove(plCreate[i].GetPanel());
+            }
         }
 
         public override void Resize(object? sender, EventArgs e)

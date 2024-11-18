@@ -21,7 +21,6 @@ namespace MenschADN.screens
 
         public int currentPlayerIndex = -1;
         public int currentColor { get { return currentPlayers[currentPlayerIndex].currentColor; } }
-
         public GameScreen(Displayer parent,Screen parentScreen) : base(parent,parentScreen)
         {
             currentPlayers = new LocalPlayer[4];
@@ -29,6 +28,12 @@ namespace MenschADN.screens
             currentPlayers[1] = new LocalPlayer(this, 1);
             currentPlayers[2] = new LocalPlayer(this, 2);
             currentPlayers[3] = new LocalPlayer(this, 3);
+            this.MoveToNetPlayer();
+        }
+        public void GivePlayers(Player[] pl)
+        {
+            currentPlayers = pl;
+            currentPlayerIndex = -1;
             this.MoveToNetPlayer();
         }
         public override void Create()
