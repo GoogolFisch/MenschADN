@@ -16,6 +16,7 @@ namespace MenschADN.screens
         Label diceNumber;
         Label winnerDisplay;
         Font hugeFont;
+        System.Windows.Forms.Timer ticker;
 
         int totalTrys = 0;
 
@@ -38,6 +39,8 @@ namespace MenschADN.screens
         }
         public override void Create()
         {
+            ticker = new System.Windows.Forms.Timer() { Interval = 750,Enabled = false };
+            ticker.Tick += BotMove;
             hugeFont = new Font(FontFamily.GenericSerif, 12);
             board = new GameBoard(this);
             gameBoardPan = new Panel()
@@ -55,6 +58,7 @@ namespace MenschADN.screens
             // before the game starts!
             UpdateCurrentDisplay();
         }
+
         public void ShowWinner()
         {
             winnerDisplay = new Label()
@@ -98,6 +102,24 @@ namespace MenschADN.screens
                 currentPlayerIndex = (currentPlayerIndex + 1) % 4;
             }
             currentPlayers[currentPlayerIndex].StartTurn();
+            if (currentPlayers[currentPlayerIndex].IsBot() && ticker != null)
+            {
+                ticker.Start();
+            }
+        }
+        private void BotMove(object? sender, EventArgs e)
+        {
+            if (currentPlayers[currentPlayerIndex].HandelTurn(null))
+            {
+                ticker.Stop();
+                if (currentPlayers[currentPlayerIndex].HasWon())
+                {
+                    ShowWinner();
+                }
+                else
+                    MoveToNetPlayer();
+            }
+            UpdateCurrentDisplay();
         }
         public void SlectPiece(GamePiece currentGamePiece)
         {
@@ -114,38 +136,6 @@ namespace MenschADN.screens
                     MoveToNetPlayer();
             }
             UpdateCurrentDisplay();
-            //currentGamePiece.Move(6);
-            /* // this needs to be bullet-proof...
-            // test if any can move?
-            bool canOtherPiecesMove = false;
-            foreach(GamePiece overGamePiece in board.allPieces)
-            {
-                if(overGamePiece.color == currentColor)
-                    canOtherPiecesMove |= overGamePiece.canMove;
-            }
-            // test the move
-            if (canOtherPiecesMove && !currentGamePiece.canMove && rolledNumber != 6)
-                // you keep your turn...?
-                return;
-            totalTrys++;
-            if (!currentGamePiece.Move(rolledNumber))
-            {
-                //reroll if nothing can move!
-                rolledNumber = Random.Shared.Next(1, 7);
-                if(totalTrys < 4 && !canOtherPiecesMove && !currentGamePiece.canMove)
-                    return;
-            }
-            if (rolledNumber == 6 || (canOtherPiecesMove && totalTrys <= 3))
-            {
-                totalTrys = 0;
-            }
-            else
-            {
-                currentColor = (currentColor + 1) % 4;
-            }
-            rolledNumber = Random.Shared.Next(1, 7);
-            diceNumber.Text = $"{rolledNumber}-{currentColor}"; // XXX please change
-            */
         }
     }
 }

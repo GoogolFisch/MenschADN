@@ -12,7 +12,7 @@ namespace MenschADN.players
     {
         public string name;
         public int color;
-        public PlayerType type;
+        public PlayerType type{ get { return (PlayerType)plType.SelectedItem; } }
 
         FlowLayoutPanel flp;
         TextBox nameBox;
@@ -65,7 +65,7 @@ namespace MenschADN.players
             if(type == PlayerType.LocalPlayer)
                 return new LocalPlayer(sc, color);
             else if(type == PlayerType.BotPlayer)
-                return null;
+                return new FirstMoveBot(sc,color);
             return null;
         }
     }
