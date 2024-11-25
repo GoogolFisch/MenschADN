@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MenschADN.players
 {
-    public class Apearence
+    public enum PlayerType
     {
-        public static Color[] playerColors = {Color.OrangeRed,Color.Yellow,Color.LimeGreen,Color.SkyBlue };
+        LocalPlayer,
+        BotPlayer
     }
 }
