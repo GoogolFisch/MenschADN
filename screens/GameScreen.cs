@@ -10,16 +10,16 @@ namespace MenschADN.screens
 {
     public class GameScreen : Screen
     {
-        Player[] currentPlayers;
+        internal Player[] currentPlayers;
         internal GameBoard board;
-        Panel gameBoardPan;
-        Label diceNumber;
-        Label winnerDisplay;
-        Button returning;
-        Font hugeFont;
-        System.Windows.Forms.Timer ticker;
+        internal Panel gameBoardPan;
+        internal Label diceNumber;
+        internal Label winnerDisplay;
+        internal Button returning;
+        internal Font hugeFont;
+        internal System.Windows.Forms.Timer ticker;
 
-        int totalTrys = 0;
+        internal int totalTrys = 0;
 
         public int currentPlayerIndex = -1;
         public int currentColor { get { return currentPlayers[currentPlayerIndex].currentColor; } }
@@ -32,7 +32,7 @@ namespace MenschADN.screens
             currentPlayers[3] = new LocalPlayer(this, 3);
             this.MoveToNetPlayer();/**/
         }
-        public void GivePlayers(Player[] pl)
+        public virtual void GivePlayers(Player[] pl)
         {
             currentPlayers = pl;
             currentPlayerIndex = -1;

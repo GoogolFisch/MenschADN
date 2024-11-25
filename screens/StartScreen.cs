@@ -62,8 +62,8 @@ namespace MenschADN.screens
             {
                 plList[i] = plCreate[i].MakePlayer(sc);
             }
-            parentForm.ChangeScreen(sc);
             sc.GivePlayers(plList);
+            parentForm.ChangeScreen(sc);
         }
 
         public override void Destroy()
