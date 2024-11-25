@@ -64,7 +64,7 @@ namespace MenschADN.game
                 tileButton[overBut].Click += (o, e) => {
                     foreach (GamePiece pc in allPieces)
                     {
-                        if (pc.realPos == keepThisPos && pc.color == gameScreen.currentColor && pc.canMove)
+                        if (pc.projectedPos == keepThisPos && pc.color == gameScreen.currentColor && pc.canMove)
                         {
                             gameScreen.SlectPiece(pc);
                             return;
@@ -102,7 +102,7 @@ namespace MenschADN.game
                     homeButtons[overHome, overBut].Click += (o, e) => {
                         foreach (GamePiece pc in allPieces)
                         {
-                            if (pc.realPos == keepThisPos &&
+                            if (pc.projectedPos == keepThisPos &&
                             pc.color == keepThisColor && pc.color == gameScreen.currentColor)
                             {
                                 gameScreen.SlectPiece(pc);
@@ -141,7 +141,7 @@ namespace MenschADN.game
                         foreach (GamePiece pc in allPieces)
                         {
                             if (
-                            pc.realPos == keepThisPos &&
+                            pc.projectedPos == keepThisPos &&
                             pc.color == gameScreen.currentColor &&
                             pc.color == keepThisColor &&
                             !pc.canMove
@@ -191,7 +191,7 @@ namespace MenschADN.game
         {
             for (int i = 0; i < allPieces.Length; i++)
             {
-                if (allPieces[i].realPos == pos && allPieces[i].canMove)
+                if (allPieces[i].projectedPos == pos && allPieces[i].canMove)
                 {
                     return allPieces[i];
                 }
@@ -202,7 +202,7 @@ namespace MenschADN.game
         {
             for (int i = 0; i < allPieces.Length; i++)
             {
-                if (allPieces[i].realPos == pos && allPieces[i].canMove && allPieces[i].color == color)
+                if (allPieces[i].projectedPos == pos && allPieces[i].canMove && allPieces[i].color == color)
                 {
                     return allPieces[i];
                 }

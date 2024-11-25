@@ -12,7 +12,7 @@ namespace MenschADN.game
     {
         internal int startPos;
         internal int position;
-        public int realPos { get{ if (!canMove) { return startPos; } else if (position < 40) return (position + color * 10) % 40; else return position; } }
+        public int projectedPos { get{ if (!canMove) { return startPos; } else if (position < 40) return (position + color * 10) % 40; else return position; } }
         internal bool canMove;
         internal int color;
         internal bool isWinning { get { return position >= 40; } }
@@ -33,7 +33,7 @@ namespace MenschADN.game
             }
             if (position < 40)
             {
-                board.tileButton[realPos].BackgroundImage = null;
+                board.tileButton[projectedPos].BackgroundImage = null;
                 return;
             }
             else
@@ -51,7 +51,7 @@ namespace MenschADN.game
             }
             if (position < 40)
             {
-                board.tileButton[realPos].BackgroundImage = ImageLoader.playerArr[color];
+                board.tileButton[projectedPos].BackgroundImage = ImageLoader.playerArr[color];
                 return;
             }
             else
@@ -75,7 +75,7 @@ namespace MenschADN.game
                 {
                     position = 0;
                     canMove = true;
-                    int ccpM = realPos;
+                    int ccpM = projectedPos;
                     canMove = false;
                     GamePiece gp = board.PlayerAtPos(ccpM);
                     if(gp != null && gp.color != this.color)
@@ -93,7 +93,7 @@ namespace MenschADN.game
             else
             {
                 position += spaces;
-                int keepPos = realPos;
+                int keepPos = projectedPos;
                 position -= spaces;
                 GamePiece gp = board.PlayerAtPos(keepPos);
                 if (position + spaces >= 40) gp = null;

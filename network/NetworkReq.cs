@@ -11,10 +11,13 @@ namespace MenschADN.network
 {
     public class NetworkReq
     {
+        public const int HELLO_MSG = 127465389;
+        public const int CLOSE_MSG = 255;
         public const int PORT = 25555;
         public const string LOCAL = "127.0.0.1";
         public bool isHandelt;
         public bool inGame;
+        public int playersColor = -1;
         static int idCounter = 0;
         public int id;
         public TcpClient conn;
@@ -30,8 +33,13 @@ namespace MenschADN.network
         }
         public byte[] ReadStream()
         {
-            byte[] data = new byte[stream.Length];
-            stream.Read(data, 0, (int)stream.Length);
+            if(!stream.DataAvailable)return new byte[0];
+            byte[] data = new byte[256];
+            int i = 0;
+            while (stream.DataAvailable)
+            {
+                i += stream.Read(data, i, 1);
+            }
 
 
             return data;
@@ -46,6 +54,11 @@ namespace MenschADN.network
             }
             catch { return false; }
             return true;
+        }
+
+        internal void Close()
+        {
+            stream.Close();
         }
     }
 }

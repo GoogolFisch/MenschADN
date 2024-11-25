@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualBasic.Devices;
+﻿using MenschADN.game;
+using MenschADN.players;
+using Microsoft.VisualBasic.Devices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,19 +14,84 @@ namespace MenschADN.screens
     public class ClientGameScreen : GameScreen
     {
         public network.NetworkReq clientConn;
-        public ClientGameScreen(Displayer parent, Screen? screenParent) : base(parent, screenParent)
+        public string address;
+        public int playingColor;
+        internal System.Windows.Forms.Timer messageTimer;
+        public ClientGameScreen(Displayer parent, Screen screenParent) : base(parent, screenParent)
         {
+            address = network.NetworkReq.LOCAL;
 
+            currentPlayers = new LocalPlayer[4];
+            currentPlayers[0] = new LocalPlayer(this, 0, "a");
+            currentPlayers[1] = new LocalPlayer(this, 1, "a");
+            currentPlayers[2] = new LocalPlayer(this, 2, "a");
+            currentPlayers[3] = new LocalPlayer(this, 3, "a");
         }
         public override void Create()
         {
             base.Create();
+            messageTimer = new System.Windows.Forms.Timer();
+            messageTimer.Interval = 100;
+            messageTimer.Tick += HandelMessageTick;
+            messageTimer.Start();
             try
             {
-                TcpClient cl = new TcpClient(network.NetworkReq.LOCAL, network.NetworkReq.PORT);
+                TcpClient cl = new TcpClient(address, network.NetworkReq.PORT);
                 clientConn = new network.NetworkReq(cl);
+                clientConn.SendStream(BitConverter.GetBytes(network.NetworkReq.HELLO_MSG));
             }
-            catch {  }
+            catch { base.GetChangeBackScreen(null, EventArgs.Empty); }
+        }
+
+        private void HandelMessageTick(object? sender, EventArgs e)
+        {
+            byte[] recv = clientConn.ReadStream();
+            if (recv.Length < 2) return;
+            if (!clientConn.isHandelt)
+            {
+                int color = BitConverter.ToInt32(recv, 0);
+                if (color == network.NetworkReq.CLOSE_MSG)
+                    base.GetChangeBackScreen(sender,e);
+                clientConn.isHandelt = true;
+                playingColor = color;
+                return;
+            }
+
+            if (recv[1] != 40)
+            {
+                currentPlayerIndex = recv[0];
+                currentPlayers[currentPlayerIndex].diceNumber = recv[1];
+                UpdateCurrentDisplay();
+                for (int i = 0; i < board.allPieces.Length; i++)
+                {
+                    if (board.allPieces[i].color == recv[2] && board.allPieces[i].startPos == recv[3])
+                    {
+                        board.allPieces[i].position = recv[5];
+                        board.allPieces[i].Move(recv[4]);
+                        break;
+                    }
+                }
+            }
+
+
+            // recv data!
+        }
+
+        public override void SlectPiece(GamePiece currentGamePiece)
+        {
+            if (currentGamePiece == null || currentColor != currentGamePiece.color || currentPlayerIndex != playingColor) { return; }
+            byte[] data = { (byte)currentPlayerIndex, (byte)currentGamePiece.startPos, (byte)currentPlayers[currentPlayerIndex].diceNumber,(byte)currentGamePiece.position };
+            if (!clientConn.SendStream(data))
+            {
+                throw new Exception("no more connection! :(");
+            }
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+            messageTimer.Dispose();
+            if(clientConn != null)clientConn.Close();
         }
     }
 }

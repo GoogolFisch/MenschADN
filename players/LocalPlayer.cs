@@ -29,11 +29,11 @@ namespace MenschADN.players
             }
             if (atStartCount == 4) 
                 return EveryAtStart(selectedGamePiece);
-            else if (isStuck) 
+            else if (isStuck)
                 return true;
             else
                 return PlayRace(selectedGamePiece, atStartCount);
-            //return true;
+            //return true; if the next player should have it turn
         }
         public override bool IsBot()
         {
