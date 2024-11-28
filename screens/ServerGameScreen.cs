@@ -71,9 +71,18 @@ namespace MenschADN.screens
                             Debug.Write(send[ei] + ",");
                         Debug.WriteLine("start-send");
                         netreq.playersColor = i;
+                        netreq.isHandelt = true;
                         break;
                     }
-                    netreq.isHandelt = true;
+                    if (!netreq.isHandelt)
+                    {
+                        byte[] send = new byte[]{ 200,(byte)currentPlayerIndex, (byte)currentPlayers[currentPlayerIndex].diceNumber,
+                        40,40,0,0};
+                        netreq.SendStream(send);
+                        for (int ei = 0; ei < send.Length; ei++)
+                            Debug.Write(send[ei] + ",");
+                        Debug.WriteLine("over-start");
+                    }
                 }
                 else
                 {
@@ -88,10 +97,14 @@ namespace MenschADN.screens
                     for (int i = 0; i < board.allPieces.Length; i++)
                     {
                         GamePiece gp = board.allPieces[i];
-                        if (gp.color == data[0] && gp.startPos == data[1])
+                        if (gp.color == data[0] && gp.localIndex == data[1])
                         {
-                            gp.position = data[3];
+                            //gp.position = data[3];
                             int oldDieNum = currentPlayers[currentPlayerIndex].diceNumber;
+                            int oldPiecePos;
+                            if (gp.canMove)
+                                oldPiecePos = gp.position;
+                            else oldPiecePos = -1;
                                 
                             if (currentPlayers[currentPlayerIndex].HandelTurn(gp))
                             {
@@ -102,9 +115,10 @@ namespace MenschADN.screens
                                 }
                                 MoveToNextPlayer();
                             }
+                            if(oldPiecePos == gp.position) { break; }
                             byte[] send = {
                                 (byte)currentPlayerIndex, (byte)currentPlayers[currentPlayerIndex].diceNumber,
-                                data[0],data[1],(byte)oldDieNum,(byte)gp.position
+                                data[0],data[1],(byte)oldDieNum,(byte)oldPiecePos
                             };
                             for (int ei = 0; ei < send.Length; ei++)
                                 Debug.Write(send[ei] + ",");
@@ -160,7 +174,7 @@ namespace MenschADN.screens
 
             byte[] send = {
                 (byte)currentPlayerIndex, (byte)currentPlayers[currentPlayerIndex].diceNumber,
-                (byte)currentGamePiece.color,(byte)currentGamePiece.startPos,(byte)dieNum,(byte)prevPos
+                (byte)currentGamePiece.color,(byte)currentGamePiece.localIndex,(byte)dieNum,(byte)prevPos
             };
             PublishData(send);
         }

@@ -71,9 +71,14 @@ namespace MenschADN.screens
                 UpdateCurrentDisplay();
                 for (int i = 0; i < board.allPieces.Length; i++)
                 {
-                    if (board.allPieces[i].color == recv[2] && board.allPieces[i].startPos == recv[3])
+                    if (board.allPieces[i].color == recv[2] && board.allPieces[i].localIndex == recv[3])
                     {
-                        board.allPieces[i].position = recv[5];
+                        board.allPieces[i].canMove = false;
+                        if (recv[5] < 100)
+                        {
+                            board.allPieces[i].canMove = true;
+                            board.allPieces[i].position = Math.Max(0, (int)recv[5]);
+                        }
                         board.allPieces[i].Move(recv[4]);
                         break;
                     }
@@ -87,7 +92,7 @@ namespace MenschADN.screens
         public override void SlectPiece(GamePiece currentGamePiece)
         {
             if (currentGamePiece == null || currentColor != currentGamePiece.color || currentPlayerIndex != playingColor) { return; }
-            byte[] data = { (byte)currentPlayerIndex, (byte)currentGamePiece.startPos, (byte)currentPlayers[currentPlayerIndex].diceNumber,(byte)currentGamePiece.position };
+            byte[] data = { (byte)currentPlayerIndex, (byte)currentGamePiece.localIndex, (byte)currentPlayers[currentPlayerIndex].diceNumber,(byte)currentGamePiece.position };
 
             for (int ei = 0; ei < data.Length; ei++)
                 Debug.Write(data[ei] + ",");

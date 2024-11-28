@@ -10,16 +10,16 @@ namespace MenschADN.game
 {
     public class GamePiece
     {
-        internal int startPos;
-        internal int position;
-        public int projectedPos { get{ if (!canMove) { return startPos; } else if (position < 40) return (position + color * 10) % 40; else return position; } }
+        internal int localIndex;
+        internal int position = -1;
+        public int projectedPos { get{ if (!canMove) { return localIndex; } else if (position < 40) return (position + color * 10) % 40; else return position; } }
         internal bool canMove;
         internal int color;
         internal bool isWinning { get { return position >= 40; } }
         internal GameBoard board;
         public GamePiece(GameBoard board,int startPos,int color)
         {
-            this.startPos = startPos;
+            this.localIndex = startPos;
             this.board = board;
             this.color = color;
         }
@@ -28,7 +28,7 @@ namespace MenschADN.game
             if (!canMove)
             {
                 // homepos
-                board.startFields[color, startPos].BackgroundImage = null;
+                board.startFields[color, localIndex].BackgroundImage = null;
                 return;
             }
             if (position < 40)
@@ -46,7 +46,7 @@ namespace MenschADN.game
             if (!canMove)
             {
                 // homepos
-                board.startFields[color, startPos].BackgroundImage = ImageLoader.playerArr[color];
+                board.startFields[color, localIndex].BackgroundImage = ImageLoader.playerArr[color];
                 return;
             }
             if (position < 40)
