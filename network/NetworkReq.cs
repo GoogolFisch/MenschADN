@@ -34,15 +34,19 @@ namespace MenschADN.network
         public byte[] ReadStream()
         {
             if(!stream.DataAvailable)return new byte[0];
-            byte[] data = new byte[256];
+            byte[] data = new byte[32];
             int i = 0;
-            while (stream.DataAvailable)
+            while (stream.DataAvailable && i < data.Length - 2)
             {
                 i += stream.Read(data, i, 1);
             }
 
 
             return data;
+        }
+        public bool IsActive()
+        {
+            return conn.Connected;
         }
         public bool SendStream(byte[] data)
         {

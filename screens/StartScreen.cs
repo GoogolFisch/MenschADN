@@ -93,7 +93,7 @@ namespace MenschADN.screens
             screens.ServerGameScreen sc = new ServerGameScreen(parentForm, this);
             for (int i = 0; i < plList.Length; i++)
             {
-                plList[i] = plCreate[i].MakePlayer(sc);
+                plList[i] = plCreate[i].MakeServerPlayer(sc);
             }
             parentForm.ChangeScreen(sc);
             sc.GivePlayers(plList);

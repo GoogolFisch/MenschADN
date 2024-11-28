@@ -82,12 +82,25 @@ namespace MenschADN.players
             isAc = isActive.Checked;
             nameSaver = nameBox.Text;
             plT = plType.SelectedIndex;
-            if(!isActive.Checked)
+            if (!isActive.Checked)
                 return null;
-            if(type == PlayerType.LocalPlayer)
-                return new LocalPlayer(sc, color,nameSaver);
-            else if(type == PlayerType.BotPlayer)
-                return new FirstMoveBot(sc,color, nameSaver);
+            if (type == PlayerType.LocalPlayer)
+                return new LocalPlayer(sc, color, nameSaver);
+            else if (type == PlayerType.BotPlayer)
+                return new FirstMoveBot(sc, color, nameSaver);
+            return null;
+        }
+        internal Player MakeServerPlayer(MenschADN.screens.GameScreen sc)
+        {
+            isAc = isActive.Checked;
+            nameSaver = nameBox.Text;
+            plT = plType.SelectedIndex;
+            if (!isActive.Checked)
+                return null;
+            if (type == PlayerType.LocalPlayer)
+                return new ServerPlayer(sc, color, nameSaver);
+            else if (type == PlayerType.BotPlayer)
+                return new FirstMoveBot(sc, color, nameSaver);
             return null;
         }
     }

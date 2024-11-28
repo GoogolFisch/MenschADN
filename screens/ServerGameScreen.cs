@@ -6,13 +6,14 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using MenschADN.game;
+using MenschADN.players;
+using System.Diagnostics;
 
 namespace MenschADN.screens
 {
     public class ServerGameScreen : GameScreen
     {
         internal System.Windows.Forms.Timer messageTimer;
-        int oldColor = -1;
         public ServerGameScreen(Displayer parent, Screen parentScreen) : base(parent, parentScreen)
         {
         }
@@ -56,26 +57,30 @@ namespace MenschADN.screens
                         netreq.Close();
                         servClient.Remove(netreq);
                     }
-                    else
+                    for(int i = 0; i < currentPlayers.Length;i++)
                     {
-                        if (currentPlayerIndex != oldColor)
-                        {
-                            if (oldColor == -1) oldColor = currentPlayerIndex;
-                            netreq.playersColor = currentPlayerIndex;
-                            netreq.SendStream(BitConverter.GetBytes(currentPlayerIndex));
-                            MoveToNextPlayer();
-                            if (currentPlayerIndex == oldColor)
-                            {
-                                byte[] send = { (byte)currentPlayerIndex, (byte)currentPlayers[currentPlayerIndex].diceNumber,
-                            40,40,0,0};
-                                PublishData(send);
-                            }
-                        }
+                        if (currentPlayers[i].GetType() != typeof(ServerPlayer)) continue;
+                        var cpl = (ServerPlayer)currentPlayers[i];
+                        if (cpl == null) continue;
+                        if (cpl.specificClient != null && cpl.specificClient.IsActive()) continue;
+                        cpl.specificClient = netreq;
+                        byte[] send = new byte[]{ (byte)i,(byte)currentPlayerIndex, (byte)currentPlayers[currentPlayerIndex].diceNumber,
+                        40,40,0,0};
+                        netreq.SendStream(send);
+                        for (int ei = 0; ei < send.Length; ei++)
+                            Debug.Write(send[ei] + ",");
+                        Debug.WriteLine("start-send");
+                        netreq.playersColor = i;
+                        break;
                     }
                     netreq.isHandelt = true;
                 }
                 else
                 {
+                    for (int ei = 0; ei < data.Length; ei++)
+                        Debug.Write(data[ei] + ",");
+                    Debug.WriteLine("recv from"+overClient);
+
                     if (netreq.playersColor != currentPlayerIndex)
                     {
                         continue;
@@ -86,6 +91,7 @@ namespace MenschADN.screens
                         if (gp.color == data[0] && gp.startPos == data[1])
                         {
                             gp.position = data[3];
+                            int oldDieNum = currentPlayers[currentPlayerIndex].diceNumber;
                                 
                             if (currentPlayers[currentPlayerIndex].HandelTurn(gp))
                             {
@@ -98,9 +104,13 @@ namespace MenschADN.screens
                             }
                             byte[] send = {
                                 (byte)currentPlayerIndex, (byte)currentPlayers[currentPlayerIndex].diceNumber,
-                                data[0],data[1],0,(byte)gp.position
+                                data[0],data[1],(byte)oldDieNum,(byte)gp.position
                             };
+                            for (int ei = 0; ei < send.Length; ei++)
+                                Debug.Write(send[ei] + ",");
+                            Debug.WriteLine("publish");
                             PublishData(send);
+                            UpdateCurrentDisplay();
                             break;
                         }
                     }
@@ -120,11 +130,14 @@ namespace MenschADN.screens
                 {
                     network.NetworkReq clcn = new network.NetworkReq(tcpListen.AcceptTcpClient());
                     servClient.Add(clcn);
+                    Debug.WriteLine($"servClintList:{servClient.Count}");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.ToString());
                     Console.WriteLine("Something went wrong with the client accepting!");
+                    Debug.WriteLine(ex.ToString());
+                    Debug.WriteLine("Something went wrong with the client accepting!");
                 }
             }
         }
@@ -140,6 +153,7 @@ namespace MenschADN.screens
         }
         public override void SlectPiece(GamePiece currentGamePiece)
         {
+            if (currentGamePiece == null) return;
             int prevPos = currentGamePiece.position;
             int dieNum = currentPlayers[currentPlayerIndex].diceNumber;
             base.SlectPiece(currentGamePiece);

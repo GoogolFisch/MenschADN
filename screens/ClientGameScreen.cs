@@ -3,6 +3,7 @@ using MenschADN.players;
 using Microsoft.VisualBasic.Devices;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -39,6 +40,7 @@ namespace MenschADN.screens
                 TcpClient cl = new TcpClient(address, network.NetworkReq.PORT);
                 clientConn = new network.NetworkReq(cl);
                 clientConn.SendStream(BitConverter.GetBytes(network.NetworkReq.HELLO_MSG));
+                Debug.WriteLine("send-data!");
             }
             catch { base.GetChangeBackScreen(null, EventArgs.Empty); }
         }
@@ -49,14 +51,19 @@ namespace MenschADN.screens
             if (recv.Length < 2) return;
             if (!clientConn.isHandelt)
             {
-                int color = BitConverter.ToInt32(recv, 0);
+                int color = recv[0];
                 if (color == network.NetworkReq.CLOSE_MSG)
                     base.GetChangeBackScreen(sender,e);
                 clientConn.isHandelt = true;
+                Debug.WriteLine(color);
                 playingColor = color;
-                return;
+                // shift down! everything inside of ercv
+                for (int i = 0; i < 10; recv[i++] = recv[i]);
             }
 
+            for (int ei = 0; ei < 6; ei++)
+                Debug.Write(recv[ei] + ",");
+            Debug.WriteLine("recv");
             if (recv[1] != 40)
             {
                 currentPlayerIndex = recv[0];
@@ -81,9 +88,13 @@ namespace MenschADN.screens
         {
             if (currentGamePiece == null || currentColor != currentGamePiece.color || currentPlayerIndex != playingColor) { return; }
             byte[] data = { (byte)currentPlayerIndex, (byte)currentGamePiece.startPos, (byte)currentPlayers[currentPlayerIndex].diceNumber,(byte)currentGamePiece.position };
+
+            for (int ei = 0; ei < data.Length; ei++)
+                Debug.Write(data[ei] + ",");
+            Debug.WriteLine("send!");
             if (!clientConn.SendStream(data))
             {
-                throw new Exception("no more connection! :(");
+                GetChangeBackScreen(this,EventArgs.Empty);
             }
         }
 
