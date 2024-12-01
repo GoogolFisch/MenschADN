@@ -23,7 +23,7 @@ namespace MenschADN.game
             this.board = board;
             this.color = color;
         }
-        private void RemFromBoard()
+        internal void RemFromBoard()
         {
             if (!canMove)
             {
