@@ -115,14 +115,17 @@ namespace MenschADN.screens
                                 }
                                 MoveToNextPlayer();
                             }
-                            byte[] send = {
-                                (byte)currentPlayerIndex, (byte)currentPlayers[currentPlayerIndex].diceNumber,
-                                data[0],data[1],(byte)oldDieNum,(byte)oldPiecePos
-                            };
-                            for (int ei = 0; ei < send.Length; ei++)
-                                Debug.Write(send[ei] + ",");
-                            Debug.WriteLine("publish");
-                            PublishData(send);
+                            if (oldPiecePos != gp.position || currentPlayers[currentPlayerIndex].diceNumber != oldDieNum)
+                            {
+                                byte[] send = {
+                                    (byte)currentPlayerIndex, (byte)currentPlayers[currentPlayerIndex].diceNumber,
+                                    data[0],data[1],(byte)oldDieNum,(byte)oldPiecePos
+                                };
+                                for (int ei = 0; ei < send.Length; ei++)
+                                    Debug.Write(send[ei] + ",");
+                                Debug.WriteLine("publish");
+                                PublishData(send);
+                            }
                             UpdateCurrentDisplay();
                             break;
                         }
