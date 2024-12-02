@@ -12,6 +12,7 @@ namespace MenschADN.screens
         Font titleFont;
         Label title;
         Button startGame;
+        Button helpMe;
         FlowLayoutPanel playerSelect;
         static PlayerCreator[] plCreate = new PlayerCreator[4];
         public StartScreen(Displayer parent,Screen parentScreen) : base(parent, parentScreen)
@@ -41,6 +42,14 @@ namespace MenschADN.screens
             };
             startGame.Click += ChangeToGame;
             parentForm.Controls.Add(startGame);
+            helpMe = new Button()
+            {
+                AutoSize = true,
+                Text = "Help",
+                Font = titleFont,
+            };
+            helpMe.Click += GotoHelpScreen;
+            parentForm.Controls.Add(helpMe);
             playerSelect = new FlowLayoutPanel()
             {
                 AutoSize = true,
@@ -65,6 +74,11 @@ namespace MenschADN.screens
             sc.GivePlayers(plList);
             parentForm.ChangeScreen(sc);
         }
+        private void GotoHelpScreen(object sender, EventArgs e)
+        {
+            HelpScreen sc = new HelpScreen(parentForm,this);
+            parentForm.ChangeScreen(sc);
+        }
 
         public override void Destroy()
         {
@@ -72,6 +86,8 @@ namespace MenschADN.screens
             title.Dispose();
             parentForm.Controls.Remove(startGame);
             startGame.Dispose();
+            parentForm.Controls.Remove(helpMe);
+            helpMe.Dispose();
             parentForm.Controls.Remove(playerSelect);
             playerSelect.Dispose();
             // remove font!
@@ -86,6 +102,7 @@ namespace MenschADN.screens
         {
             title.Location = new Point((parentForm.Width - title.Width) / 2, 15);
             startGame.Location = new Point((parentForm.Width - startGame.Width) / 2, parentForm.Height / 5);
+            helpMe.Location = new Point((parentForm.Width - helpMe.Width) / 2, startGame.Location.Y + (int)(startGame.Height * 1.25));
         }
         public void AddScore(int color)
         {
