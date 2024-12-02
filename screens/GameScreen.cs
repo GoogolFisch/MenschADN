@@ -164,9 +164,9 @@ namespace MenschADN.screens
                     continue;
                 Button overWrite;
                 if (!board.allPieces[gmPiece].canMove)
-                    overWrite = board.startFields[currentColor, board.allPieces[gmPiece].startPos];
+                    overWrite = board.startFields[currentColor, board.allPieces[gmPiece].localIndex];
                 else if (board.allPieces[gmPiece].position < 40)
-                    overWrite = board.tileButton[board.allPieces[gmPiece].realPos];
+                    overWrite = board.tileButton[board.allPieces[gmPiece].projectedPos];
                 else
                     overWrite = board.homeButtons[currentColor, board.allPieces[gmPiece].position - 40];
                 Color nCol = overWrite.BackColor;
