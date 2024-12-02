@@ -131,7 +131,7 @@ namespace MenschADN.screens
                 botTicker.Start();
             }
         }
-        private void BotMove(object? sender, EventArgs e)
+        public virtual void BotMove(object? sender, EventArgs e)
         {
             if (currentPlayers[currentPlayerIndex].HandelTurn(null))
             {

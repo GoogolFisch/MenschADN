@@ -12,7 +12,7 @@ namespace MenschADN.game
     {
         internal int localIndex;
         internal int position = -1;
-        public int projectedPos { get{ if (!canMove) { return localIndex; } else if (position < 40) return (position + color * 10) % 40; else return position; } }
+        public int projectedPos { get{ if (!canMove) { return color * 10; } else if (position < 40) return (position + color * 10) % 40; else return position; } }
         internal bool canMove;
         internal int color;
         internal bool isWinning { get { return position >= 40; } }
@@ -134,17 +134,30 @@ namespace MenschADN.game
 
         internal bool IsStuck(int diceNumber)
         {
+            GamePiece gp;
             if (!canMove && diceNumber != 6)
                 return true;
+            if (!canMove && diceNumber == 6)
+            {
+                gp = board.PlayerAtPos(this.projectedPos);
+                if (gp == null || gp.color != this.color) return false;
+                return true;
+            }
             if (position + diceNumber >= 44)
                 return true;
-            for (int over = position + 1; over <= diceNumber + position; over++)
+            for (int over = Math.Max(40,position + 1); over <= diceNumber + position; over++)
             {
-                GamePiece gp = board.PlayerInHome(over, color);
+                gp = board.PlayerInHome(over, color);
                 if (gp != null && gp.color == color)
                     return true;
             }
-            return false;
+            position += diceNumber;
+            int savePos = projectedPos;
+            position -= diceNumber;
+            gp = board.PlayerAtPos(savePos);
+            if (gp == null || gp.color != this.color)
+                return false;
+            return true;
         }
     }
 }

@@ -39,5 +39,10 @@ namespace MenschADN.players
         {
             return false;
         }
+
+        public override GamePiece SelectGmPiece(GamePiece selectedGamePiece)
+        {
+            return selectedGamePiece;
+        }
     }
 }

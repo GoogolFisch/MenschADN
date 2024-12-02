@@ -64,7 +64,7 @@ namespace MenschADN.game
                 tileButton[overBut].Click += (o, e) => {
                     foreach (GamePiece pc in allPieces)
                     {
-                        if (pc.projectedPos == keepThisPos && pc.color == gameScreen.currentColor && pc.canMove)
+                        if (pc.localIndex == keepThisPos && pc.color == gameScreen.currentColor && pc.canMove)
                         {
                             gameScreen.SlectPiece(pc);
                             return;

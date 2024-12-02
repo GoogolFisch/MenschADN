@@ -145,6 +145,7 @@ namespace MenschADN.screens
             title.Location = new Point((parentForm.Width - title.Width) / 2, 15);
             startGame.Location = new Point((parentForm.Width - startGame.Width) / 2, parentForm.Height / 5);
             startAsClient.Location = new Point((parentForm.Width - startAsClient.Width) / 2, (parentForm.Height / 5) * 3);
+            serverAddress.Location = new Point((parentForm.Width - startAsClient.Width) / 2, startAsClient.Location.Y - (int)(serverAddress.Height * 1.25));
             startAsServer.Location = new Point((parentForm.Width - startAsServer.Width) / 2, startAsClient.Location.Y + (int)(startAsClient.Height * 1.25));
         }
         public void AddScore(int color)

@@ -16,7 +16,7 @@ namespace MenschADN.players
         {
             escapeTrys = 0;
         }
-        public override bool HandelTurn(GamePiece selectedGamePiece)
+        public override GamePiece SelectGmPiece(GamePiece selectedGamePiece)
         {
             int atStartCount = 0;
             bool isStuck = true;
@@ -32,28 +32,54 @@ namespace MenschADN.players
                     isStuck &= overGamePiece.IsStuck(diceNumber);
                 }
             }
-            for (int i = 0; i < bestPiece.Length;i++)
+            if (atStartCount == 4)
+                return bestPiece[0];
+            for (int i = 0; i < bestPiece.Length; i++)
             {
-                GamePiece gamePiece = bestPiece[i];
-                if (atStartCount == 4)
+                if(!bestPiece[i].IsStuck(diceNumber) && bestPiece[i].position == 0)
+                    return bestPiece[i];
+                if (!bestPiece[i].IsStuck(diceNumber) && !bestPiece[i].canMove)
+                    return bestPiece[i];
+            }
+            for (int i = 0; i < bestPiece.Length; i++)
+            {
+                if (!bestPiece[i].IsStuck(diceNumber))
+                    return bestPiece[i];
+            }
+            return bestPiece[0];
+        }
+        public override bool HandelTurn(GamePiece selectedGamePiece)
+        {
+            int atStartCount = 0;
+            bool isStuck = true;
+            GamePiece bestPiece = SelectGmPiece(selectedGamePiece);
+            foreach (GamePiece overGamePiece in screen.board.allPieces)
+            {
+                if (overGamePiece.color == currentColor)
                 {
-                    if(EveryAtStart(gamePiece))
-                        return true;
-                    if (gamePiece.canMove)
-                    {
-                        atStartCount--;
-                        return false;
-                    }
+                    if (!overGamePiece.canMove)
+                        atStartCount++;
+                    isStuck &= overGamePiece.IsStuck(diceNumber);
                 }
-                else if (isStuck)
-                {
+            }
+            if (atStartCount == 4)
+            {
+                if(EveryAtStart(bestPiece))
                     return true;
-                }
-                else
+                if (bestPiece.canMove)
                 {
-                    if (PlayRace(gamePiece, atStartCount))
-                        return true;
+                    atStartCount--;
+                    return false;
                 }
+            }
+            else if (isStuck)
+            {
+                return true;
+            }
+            else
+            {
+                if (PlayRace(bestPiece, atStartCount))
+                    return true;
             }
             return false;
             //return true;
@@ -63,5 +89,6 @@ namespace MenschADN.players
         {
             return true;
         }
+
     }
 }

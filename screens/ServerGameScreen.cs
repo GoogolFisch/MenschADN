@@ -167,6 +167,19 @@ namespace MenschADN.screens
             foreach (network.NetworkReq clcn in servClient)
                 clcn.Close();
         }
+        public override void BotMove(object? sender, EventArgs e)
+        {
+            GamePiece gp = currentPlayers[currentPlayerIndex].SelectGmPiece(null);
+            int dieNum = currentPlayers[currentPlayerIndex].diceNumber;
+            int prevPos = gp.position;
+            base.BotMove(sender,e);
+
+            byte[] send = {
+                (byte)currentPlayerIndex, (byte)currentPlayers[currentPlayerIndex].diceNumber,
+                (byte)gp.color,(byte)gp.localIndex,(byte)dieNum,(byte)prevPos
+            };
+            PublishData(send);
+        }
         public override void SlectPiece(GamePiece currentGamePiece)
         {
             if (currentGamePiece == null) return;
