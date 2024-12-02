@@ -10,19 +10,19 @@ namespace MenschADN.screens
 {
     public class GameScreen : Screen
     {
-        Player[] currentPlayers;
+        internal Player[] currentPlayers;
         internal GameBoard board;
-        Panel gameBoardPan;
-        Label diceNumber;
-        Label winnerDisplay;
-        Button returning;
-        Font hugeFont;
-        System.Windows.Forms.Timer ticker;
+        internal Panel gameBoardPan;
+        internal Label diceNumber;
+        internal Label winnerDisplay;
+        internal Button returning;
+        internal Font hugeFont;
+        internal System.Windows.Forms.Timer botTicker;
 
-        int totalTrys = 0;
+        internal int totalTrys = 0;
 
         public int currentPlayerIndex = -1;
-        public int currentColor { get { return currentPlayers[currentPlayerIndex].currentColor; } }
+        public int currentColor { get { if (currentPlayerIndex == -1) return -1; return currentPlayers[currentPlayerIndex].currentColor; } }
         public GameScreen(Displayer parent,Screen parentScreen) : base(parent,parentScreen)
         {
             /*currentPlayers = new LocalPlayer[4];
@@ -32,17 +32,17 @@ namespace MenschADN.screens
             currentPlayers[3] = new LocalPlayer(this, 3);
             this.MoveToNetPlayer();/**/
         }
-        public void GivePlayers(Player[] pl)
+        public virtual void GivePlayers(Player[] pl)
         {
             currentPlayers = pl;
             currentPlayerIndex = -1;
-            this.MoveToNetPlayer();
+            this.MoveToNextPlayer();
             UpdateCurrentDisplay();
         }
         public override void Create()
         {
-            ticker = new System.Windows.Forms.Timer() { Interval = 750,Enabled = false };
-            ticker.Tick += BotMove;
+            botTicker = new System.Windows.Forms.Timer() { Interval = 750,Enabled = false };
+            botTicker.Tick += BotMove;
             hugeFont = new Font(FontFamily.GenericSerif, 12);
             board = new GameBoard(this);
             gameBoardPan = new Panel()
@@ -106,7 +106,7 @@ namespace MenschADN.screens
             if(currentPlayerIndex != -1)
                 diceNumber.Text = $"{currentPlayers[currentPlayerIndex].diceNumber}-{currentPlayerIndex}";
         }
-        private void GetChangeBackScreen(object? sender, EventArgs e)
+        internal void GetChangeBackScreen(object? sender, EventArgs e)
         {
             parentForm.ChangeScreen(oldScreen);
         }
@@ -118,7 +118,7 @@ namespace MenschADN.screens
             // lower right
             returning.Location = new Point(parentForm.Width - returning.Width-50, parentForm.Height - returning.Height-50);
         }
-        public void MoveToNetPlayer()
+        public void MoveToNextPlayer()
         {
             currentPlayerIndex = (currentPlayerIndex + 1) % 4;
             while (currentPlayers[currentPlayerIndex % 4] == null)
@@ -126,26 +126,26 @@ namespace MenschADN.screens
                 currentPlayerIndex = (currentPlayerIndex + 1) % 4;
             }
             currentPlayers[currentPlayerIndex].StartTurn();
-            if (currentPlayers[currentPlayerIndex].IsBot() && ticker != null)
+            if (currentPlayers[currentPlayerIndex].IsBot() && botTicker != null)
             {
-                ticker.Start();
+                botTicker.Start();
             }
         }
-        private void BotMove(object? sender, EventArgs e)
+        public virtual void BotMove(object? sender, EventArgs e)
         {
             if (currentPlayers[currentPlayerIndex].HandelTurn(null))
             {
-                ticker.Stop();
+                botTicker.Stop();
                 if (currentPlayers[currentPlayerIndex].HasWon())
                 {
                     ShowWinner();
                 }
                 else
-                    MoveToNetPlayer();
+                    MoveToNextPlayer();
             }
             UpdateCurrentDisplay();
         }
-        public void SlectPiece(GamePiece currentGamePiece)
+        public virtual void SlectPiece(GamePiece currentGamePiece)
         {
             if (currentGamePiece == null)
                 return;
@@ -157,7 +157,7 @@ namespace MenschADN.screens
                     ShowWinner();
                 }
                 else
-                    MoveToNetPlayer();
+                    MoveToNextPlayer();
             }
             UpdateCurrentDisplay();
         }

@@ -10,30 +10,30 @@ namespace MenschADN.game
 {
     public class GamePiece
     {
-        internal int startPos;
-        internal int position;
-        public int realPos { get{ if (!canMove) { return startPos; } else if (position < 40) return (position + color * 10) % 40; else return position; } }
+        internal int localIndex;
+        internal int position = -1;
+        public int projectedPos { get{ if (!canMove) { return color * 10; } else if (position < 40) return (position + color * 10) % 40; else return position; } }
         internal bool canMove;
         internal int color;
         internal bool isWinning { get { return position >= 40; } }
         internal GameBoard board;
         public GamePiece(GameBoard board,int startPos,int color)
         {
-            this.startPos = startPos;
+            this.localIndex = startPos;
             this.board = board;
             this.color = color;
         }
-        private void RemFromBoard()
+        internal void RemFromBoard()
         {
             if (!canMove)
             {
                 // homepos
-                board.startFields[color, startPos].BackgroundImage = null;
+                board.startFields[color, localIndex].BackgroundImage = null;
                 return;
             }
             if (position < 40)
             {
-                board.tileButton[realPos].BackgroundImage = null;
+                board.tileButton[projectedPos].BackgroundImage = null;
                 return;
             }
             else
@@ -46,12 +46,12 @@ namespace MenschADN.game
             if (!canMove)
             {
                 // homepos
-                board.startFields[color, startPos].BackgroundImage = ImageLoader.playerArr[color];
+                board.startFields[color, localIndex].BackgroundImage = ImageLoader.playerArr[color];
                 return;
             }
             if (position < 40)
             {
-                board.tileButton[realPos].BackgroundImage = ImageLoader.playerArr[color];
+                board.tileButton[projectedPos].BackgroundImage = ImageLoader.playerArr[color];
                 return;
             }
             else
@@ -75,7 +75,7 @@ namespace MenschADN.game
                 {
                     position = 0;
                     canMove = true;
-                    int ccpM = realPos;
+                    int ccpM = projectedPos;
                     canMove = false;
                     GamePiece gp = board.PlayerAtPos(ccpM);
                     if(gp != null && gp.color != this.color)
@@ -93,7 +93,7 @@ namespace MenschADN.game
             else
             {
                 position += spaces;
-                int keepPos = realPos;
+                int keepPos = projectedPos;
                 position -= spaces;
                 GamePiece gp = board.PlayerAtPos(keepPos);
                 if (position + spaces >= 40) gp = null;
@@ -134,17 +134,30 @@ namespace MenschADN.game
 
         internal bool IsStuck(int diceNumber)
         {
+            GamePiece gp;
             if (!canMove && diceNumber != 6)
                 return true;
+            if (!canMove && diceNumber == 6)
+            {
+                gp = board.PlayerAtPos(this.projectedPos);
+                if (gp == null || gp.color != this.color) return false;
+                return true;
+            }
             if (position + diceNumber >= 44)
                 return true;
-            for (int over = position + 1; over <= diceNumber + position; over++)
+            for (int over = Math.Max(40,position + 1); over <= diceNumber + position; over++)
             {
-                GamePiece gp = board.PlayerInHome(over, color);
+                gp = board.PlayerInHome(over, color);
                 if (gp != null && gp.color == color)
                     return true;
             }
-            return false;
+            position += diceNumber;
+            int savePos = projectedPos;
+            position -= diceNumber;
+            gp = board.PlayerAtPos(savePos);
+            if (gp == null || gp.color != this.color)
+                return false;
+            return true;
         }
     }
 }

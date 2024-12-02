@@ -12,8 +12,13 @@ namespace MenschADN.screens
         Font titleFont;
         Label title;
         Button startGame;
+        Button startAsServer;
+        Button startAsClient;
+        TextBox serverAddress;
+        Button helpMe;
         FlowLayoutPanel playerSelect;
         static PlayerCreator[] plCreate = new PlayerCreator[4];
+        static string serverAddressString = network.NetworkReq.LOCAL;
         public StartScreen(Displayer parent,Screen parentScreen) : base(parent, parentScreen)
         {
             for (int i = 0; i < plCreate.Length; i++)
@@ -41,6 +46,31 @@ namespace MenschADN.screens
             };
             startGame.Click += ChangeToGame;
             parentForm.Controls.Add(startGame);
+            // server
+            startAsServer = new Button()
+            {
+                AutoSize = true,
+                Text = "Start Server",
+                Font = titleFont,
+            };
+            startAsServer.Click += ChangeToServerGame;
+            parentForm.Controls.Add(startAsServer);
+            // client
+            startAsClient = new Button()
+            {
+                AutoSize = true,
+                Text = "Connect to Server",
+                Font = titleFont,
+            };
+            startAsClient.Click += ChangeToClientGame;
+            parentForm.Controls.Add(startAsClient);
+            serverAddress = new TextBox()
+            {
+                Size = new Size(80,20),
+                Text = serverAddressString
+            };
+            parentForm.Controls.Add(serverAddress);
+            // player stuff
             playerSelect = new FlowLayoutPanel()
             {
                 AutoSize = true,
@@ -65,6 +95,25 @@ namespace MenschADN.screens
             parentForm.ChangeScreen(sc);
             sc.GivePlayers(plList);
         }
+        private void ChangeToServerGame(object sender, EventArgs e)
+        {
+            Player[] plList = new Player[plCreate.Length];
+            screens.ServerGameScreen sc = new ServerGameScreen(parentForm, this);
+            for (int i = 0; i < plList.Length; i++)
+            {
+                plList[i] = plCreate[i].MakeServerPlayer(sc);
+            }
+            parentForm.ChangeScreen(sc);
+            sc.GivePlayers(plList);
+        }
+        private void ChangeToClientGame(object sender, EventArgs e)
+        {
+            screens.ClientGameScreen sc = new ClientGameScreen(parentForm, this);
+            //sc.address = "blab";
+            serverAddressString = serverAddress.Text;
+            sc.SetServerAddress(serverAddress.Text);
+            parentForm.ChangeScreen(sc);
+        }
 
         public override void Destroy()
         {
@@ -72,6 +121,15 @@ namespace MenschADN.screens
             title.Dispose();
             parentForm.Controls.Remove(startGame);
             startGame.Dispose();
+
+            parentForm.Controls.Remove(startAsClient);
+            startAsClient.Dispose();
+            parentForm.Controls.Remove(serverAddress);
+            serverAddress.Dispose();
+
+            parentForm.Controls.Remove(startAsServer);
+            startAsServer.Dispose();
+
             parentForm.Controls.Remove(playerSelect);
             playerSelect.Dispose();
             // remove font!
@@ -86,6 +144,9 @@ namespace MenschADN.screens
         {
             title.Location = new Point((parentForm.Width - title.Width) / 2, 15);
             startGame.Location = new Point((parentForm.Width - startGame.Width) / 2, parentForm.Height / 5);
+            startAsClient.Location = new Point((parentForm.Width - startAsClient.Width) / 2, (parentForm.Height / 5) * 3);
+            serverAddress.Location = new Point((parentForm.Width - startAsClient.Width) / 2, startAsClient.Location.Y - (int)(serverAddress.Height * 1.25));
+            startAsServer.Location = new Point((parentForm.Width - startAsServer.Width) / 2, startAsClient.Location.Y + (int)(startAsClient.Height * 1.25));
         }
         public void AddScore(int color)
         {

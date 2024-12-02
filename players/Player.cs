@@ -48,6 +48,7 @@ namespace MenschADN.players
         {
             diceNumber = Random.Shared.Next(1, 7);
         }
+        public abstract GamePiece SelectGmPiece(GamePiece selectedGamePiece);
         public abstract bool HandelTurn(GamePiece selectedGamePiece); // return if the turn should end
 
         public bool EveryAtStart(GamePiece piece)
