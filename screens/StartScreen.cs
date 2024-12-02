@@ -18,6 +18,7 @@ namespace MenschADN.screens
         Button helpMe;
         FlowLayoutPanel playerSelect;
         static PlayerCreator[] plCreate = new PlayerCreator[4];
+        static string serverAddressString = network.NetworkReq.LOCAL;
         public StartScreen(Displayer parent,Screen parentScreen) : base(parent, parentScreen)
         {
             for (int i = 0; i < plCreate.Length; i++)
@@ -66,7 +67,7 @@ namespace MenschADN.screens
             serverAddress = new TextBox()
             {
                 Size = new Size(80,20),
-                Text = network.NetworkReq.LOCAL
+                Text = serverAddressString
             };
             parentForm.Controls.Add(serverAddress);
             // player stuff
@@ -109,6 +110,7 @@ namespace MenschADN.screens
         {
             screens.ClientGameScreen sc = new ClientGameScreen(parentForm, this);
             //sc.address = "blab";
+            serverAddressString = serverAddress.Text;
             sc.SetServerAddress(serverAddress.Text);
             parentForm.ChangeScreen(sc);
         }

@@ -115,7 +115,6 @@ namespace MenschADN.screens
                                 }
                                 MoveToNextPlayer();
                             }
-                            if(oldPiecePos == gp.position) { break; }
                             byte[] send = {
                                 (byte)currentPlayerIndex, (byte)currentPlayers[currentPlayerIndex].diceNumber,
                                 data[0],data[1],(byte)oldDieNum,(byte)oldPiecePos

@@ -30,7 +30,7 @@ namespace MenschADN.screens
         }
         public void SetServerAddress(string address)
         {
-
+            this.address = address;
         }
         public override void Create()
         {
