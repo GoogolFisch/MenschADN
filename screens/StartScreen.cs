@@ -14,6 +14,7 @@ namespace MenschADN.screens
         Button startGame;
         Button startAsServer;
         Button startAsClient;
+        TextBox serverAddress;
         Button helpMe;
         FlowLayoutPanel playerSelect;
         static PlayerCreator[] plCreate = new PlayerCreator[4];
@@ -62,6 +63,12 @@ namespace MenschADN.screens
             };
             startAsClient.Click += ChangeToClientGame;
             parentForm.Controls.Add(startAsClient);
+            serverAddress = new TextBox()
+            {
+                Size = new Size(80,20),
+                Text = network.NetworkReq.LOCAL
+            };
+            parentForm.Controls.Add(serverAddress);
             // player stuff
             playerSelect = new FlowLayoutPanel()
             {
@@ -102,6 +109,7 @@ namespace MenschADN.screens
         {
             screens.ClientGameScreen sc = new ClientGameScreen(parentForm, this);
             //sc.address = "blab";
+            sc.SetServerAddress(serverAddress.Text);
             parentForm.ChangeScreen(sc);
         }
 
@@ -111,10 +119,15 @@ namespace MenschADN.screens
             title.Dispose();
             parentForm.Controls.Remove(startGame);
             startGame.Dispose();
+
             parentForm.Controls.Remove(startAsClient);
             startAsClient.Dispose();
+            parentForm.Controls.Remove(serverAddress);
+            serverAddress.Dispose();
+
             parentForm.Controls.Remove(startAsServer);
             startAsServer.Dispose();
+
             parentForm.Controls.Remove(playerSelect);
             playerSelect.Dispose();
             // remove font!

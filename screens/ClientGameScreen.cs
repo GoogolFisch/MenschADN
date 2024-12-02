@@ -28,6 +28,10 @@ namespace MenschADN.screens
             currentPlayers[2] = new LocalPlayer(this, 2, "a");
             currentPlayers[3] = new LocalPlayer(this, 3, "a");
         }
+        public void SetServerAddress(string address)
+        {
+
+        }
         public override void Create()
         {
             base.Create();
