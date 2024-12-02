@@ -159,5 +159,21 @@ namespace MenschADN.game
                 return false;
             return true;
         }
+        public bool ShowCanMove(int diceNumber)
+        {
+            if (!canMove && diceNumber != 6)
+                return true;
+            if (canMove && diceNumber == 6)
+                return false;
+            if (position + diceNumber >= 44)
+                return true;
+            for (int over = position + 1; over <= diceNumber + position; over++)
+            {
+                GamePiece gp = board.PlayerInHome(over, color);
+                if (gp != null && gp.color == color)
+                    return true;
+            }
+            return false;
+        }
     }
 }

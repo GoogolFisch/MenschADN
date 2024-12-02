@@ -12,8 +12,7 @@ namespace MenschADN.game
     {
         internal GamePiece[] allPieces;
         internal Player[] players;
-        static int tileSize = 64;
-        int diceNumber;
+        const int TILE_SIZE = 64;
         internal Button[] tileButton; // do it like this? // or with another class?
         internal Button[,] homeButtons; // change with above
         internal Button[,] startFields; // change with above
@@ -54,8 +53,8 @@ namespace MenschADN.game
             {
                 tileButton[overBut] = new Button()
                 {
-                    Location = new Point(loc[overBut].X * tileSize, loc[overBut].Y * tileSize),
-                    Size = new Size(tileSize,tileSize),
+                    Location = new Point(loc[overBut].X * TILE_SIZE, loc[overBut].Y * TILE_SIZE),
+                    Size = new Size(TILE_SIZE,TILE_SIZE),
                     Tag = overBut,
                     Text = overBut.ToString(), // remove if seen fit XXX
                     BackgroundImageLayout = ImageLayout.Zoom,
@@ -90,8 +89,8 @@ namespace MenschADN.game
                 {
                     homeButtons[overHome, overBut] = new Button()
                     {
-                        Location = new Point(homePos[overHome,overBut].X * tileSize, homePos[overHome, overBut].Y * tileSize),
-                        Size = new Size(tileSize, tileSize),
+                        Location = new Point(homePos[overHome,overBut].X * TILE_SIZE, homePos[overHome, overBut].Y * TILE_SIZE),
+                        Size = new Size(TILE_SIZE, TILE_SIZE),
                         Tag = overBut,
                         Text = $"{overHome}:{overBut}", // remove if seen fit XXX
                         BackColor = Apearence.playerColors[overHome],
@@ -128,8 +127,8 @@ namespace MenschADN.game
                 {
                     startFields[overHome, overBut] = new Button()
                     {
-                        Location = new Point(startPos[overHome, overBut].X * tileSize, startPos[overHome, overBut].Y * tileSize),
-                        Size = new Size(tileSize, tileSize),
+                        Location = new Point(startPos[overHome, overBut].X * TILE_SIZE, startPos[overHome, overBut].Y * TILE_SIZE),
+                        Size = new Size(TILE_SIZE, TILE_SIZE),
                         Tag = overBut,
                         Text = $"{overHome}:{overBut}", // remove if seen fit XXX
                         BackColor = Apearence.playerColors[overHome],

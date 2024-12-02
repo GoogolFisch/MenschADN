@@ -37,7 +37,7 @@
             ClientSize = new Size(800, 450);
             DoubleBuffered = true;
             Name = "Displayer";
-            Text = "Form1";
+            Text = "Mensch Ärger Dich Nicht";
             ResumeLayout(false);
         }
 

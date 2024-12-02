@@ -1,15 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace MenschADN.assets
 {
     public class ImageLoader
     {
-        static string filePath = "..\\..\\..\\assets\\";
-        private static Image LoadImg(string name) => Image.FromFile(filePath + name);
+        static string filePath = "\\assets\\";
+        static string backPath = "..\\..\\..";
+        private static Image LoadImg(string name) {
+            Image img;
+            img = Image.FromFile(backPath + filePath + name);
+            if(img == null) {
+                img = Image.FromFile("." + filePath + name);
+            }
+            return img;
+        }
         public static Image redPlayer = LoadImg("red.png");
         public static Image yellowPlayer = LoadImg("yellow.png");
         public static Image greenPlayer = LoadImg("green.png");

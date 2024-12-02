@@ -2,6 +2,8 @@
 using MenschADN.players;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -103,8 +105,11 @@ namespace MenschADN.screens
         }
         public void UpdateCurrentDisplay()
         {
-            if(currentPlayerIndex != -1)
+            if (currentPlayerIndex != -1 && diceNumber != null)
+            {
                 diceNumber.Text = $"{currentPlayers[currentPlayerIndex].diceNumber}-{currentPlayerIndex}";
+                HighLightPlayers();
+            }
         }
         internal void GetChangeBackScreen(object? sender, EventArgs e)
         {
@@ -129,6 +134,43 @@ namespace MenschADN.screens
             if (currentPlayers[currentPlayerIndex].IsBot() && botTicker != null)
             {
                 botTicker.Start();
+            }
+        }
+        public void ClearHighLighting()
+        {
+            for (int pos = 0; pos < board.tileButton.Length; pos++)
+            {
+                board.tileButton[pos].BackColor = Color.White;
+            }
+            for (int col = 0; col < 4; col++)
+            {
+                board.tileButton[col * 10].BackColor = Apearence.playerColors[col];
+                for (int pos = 0; pos < 4; pos++)
+                {
+                    board.homeButtons[col,pos].BackColor = Apearence.playerColors[col];
+                    board.startFields[col,pos].BackColor = Apearence.playerColors[col];
+                }
+            }
+        }
+        public void HighLightPlayers()
+        {
+            ClearHighLighting();
+
+            for(int gmPiece = 0;gmPiece < board.allPieces.Length; gmPiece++)
+            {
+                if (board.allPieces[gmPiece].color != currentColor) continue;
+                if (board.allPieces[gmPiece].ShowCanMove(
+                    currentPlayers[currentPlayerIndex].diceNumber))
+                    continue;
+                Button overWrite;
+                if (!board.allPieces[gmPiece].canMove)
+                    overWrite = board.startFields[currentColor, board.allPieces[gmPiece].startPos];
+                else if (board.allPieces[gmPiece].position < 40)
+                    overWrite = board.tileButton[board.allPieces[gmPiece].realPos];
+                else
+                    overWrite = board.homeButtons[currentColor, board.allPieces[gmPiece].position - 40];
+                Color nCol = overWrite.BackColor;
+                overWrite.BackColor = Color.FromArgb((int)(nCol.R * 0.8),(int)(nCol.G * 0.8),(int)(nCol.B * 0.8));
             }
         }
         public virtual void BotMove(object? sender, EventArgs e)

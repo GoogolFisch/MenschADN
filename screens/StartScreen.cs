@@ -46,6 +46,14 @@ namespace MenschADN.screens
             };
             startGame.Click += ChangeToGame;
             parentForm.Controls.Add(startGame);
+            helpMe = new Button()
+            {
+                AutoSize = true,
+                Text = "Help",
+                Font = titleFont,
+            };
+            helpMe.Click += GotoHelpScreen;
+            parentForm.Controls.Add(helpMe);
             // server
             startAsServer = new Button()
             {
@@ -92,8 +100,13 @@ namespace MenschADN.screens
             {
                 plList[i] = plCreate[i].MakePlayer(sc);
             }
-            parentForm.ChangeScreen(sc);
             sc.GivePlayers(plList);
+            parentForm.ChangeScreen(sc);
+        }
+        private void GotoHelpScreen(object sender, EventArgs e)
+        {
+            HelpScreen sc = new HelpScreen(parentForm,this);
+            parentForm.ChangeScreen(sc);
         }
         private void ChangeToServerGame(object sender, EventArgs e)
         {
@@ -121,6 +134,8 @@ namespace MenschADN.screens
             title.Dispose();
             parentForm.Controls.Remove(startGame);
             startGame.Dispose();
+            parentForm.Controls.Remove(helpMe);
+            helpMe.Dispose();
 
             parentForm.Controls.Remove(startAsClient);
             startAsClient.Dispose();
@@ -144,6 +159,7 @@ namespace MenschADN.screens
         {
             title.Location = new Point((parentForm.Width - title.Width) / 2, 15);
             startGame.Location = new Point((parentForm.Width - startGame.Width) / 2, parentForm.Height / 5);
+            helpMe.Location = new Point((parentForm.Width - helpMe.Width) / 2, startGame.Location.Y + (int)(startGame.Height * 1.25));
             startAsClient.Location = new Point((parentForm.Width - startAsClient.Width) / 2, (parentForm.Height / 5) * 3);
             serverAddress.Location = new Point((parentForm.Width - startAsClient.Width) / 2, startAsClient.Location.Y - (int)(serverAddress.Height * 1.25));
             startAsServer.Location = new Point((parentForm.Width - startAsServer.Width) / 2, startAsClient.Location.Y + (int)(startAsClient.Height * 1.25));
