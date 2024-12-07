@@ -77,8 +77,8 @@ namespace MenschADN.screens
                 {
                     if (board.allPieces[i].color == recv[2] && board.allPieces[i].localIndex == recv[3])
                     {
-                        board.allPieces[i].canMove = false;
                         board.allPieces[i].RemFromBoard(); // not even a slight chance of getting a ghoust!
+                        board.allPieces[i].canMove = false;
                         if (recv[5] < 100)
                         {
                             board.allPieces[i].canMove = true;
