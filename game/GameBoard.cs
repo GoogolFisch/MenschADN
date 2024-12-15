@@ -63,7 +63,7 @@ namespace MenschADN.game
                 tileButton[overBut].Click += (o, e) => {
                     foreach (GamePiece pc in allPieces)
                     {
-                        if (pc.localIndex == keepThisPos && pc.color == gameScreen.currentColor && pc.canMove)
+                        if (pc.projectedPos == keepThisPos && pc.color == gameScreen.currentColor && pc.canMove)
                         {
                             gameScreen.SlectPiece(pc);
                             return;
@@ -101,7 +101,7 @@ namespace MenschADN.game
                     homeButtons[overHome, overBut].Click += (o, e) => {
                         foreach (GamePiece pc in allPieces)
                         {
-                            if (pc.projectedPos == keepThisPos &&
+                            if (pc.localIndex == keepThisPos &&
                             pc.color == keepThisColor && pc.color == gameScreen.currentColor)
                             {
                                 gameScreen.SlectPiece(pc);
@@ -140,7 +140,7 @@ namespace MenschADN.game
                         foreach (GamePiece pc in allPieces)
                         {
                             if (
-                            pc.projectedPos == keepThisPos &&
+                            pc.localIndex == keepThisPos &&
                             pc.color == gameScreen.currentColor &&
                             pc.color == keepThisColor &&
                             !pc.canMove
