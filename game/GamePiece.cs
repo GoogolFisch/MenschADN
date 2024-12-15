@@ -167,7 +167,7 @@ namespace MenschADN.game
                 return false;
             if (position + diceNumber >= 44)
                 return true;
-            for (int over = position + 1; over <= diceNumber + position; over++)
+            for (int over = Math.Max(position + 1,40); over <= diceNumber + position; over++)
             {
                 GamePiece gp = board.PlayerInHome(over, color);
                 if (gp != null && gp.color == color)
