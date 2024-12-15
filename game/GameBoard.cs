@@ -101,7 +101,7 @@ namespace MenschADN.game
                     homeButtons[overHome, overBut].Click += (o, e) => {
                         foreach (GamePiece pc in allPieces)
                         {
-                            if (pc.localIndex == keepThisPos &&
+                            if (pc.projectedPos == keepThisPos &&
                             pc.color == keepThisColor && pc.color == gameScreen.currentColor)
                             {
                                 gameScreen.SlectPiece(pc);
